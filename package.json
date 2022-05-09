@@ -1,0 +1,17 @@
+{
+  "name": "noodl-schema-sync",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parse": "^3.4.2"
+  },
+  "devDependencies": {
+    "jasmine": "^4.0.2"
+  }
+}
