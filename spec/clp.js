@@ -64,4 +64,30 @@ describe("class level permissions tests",() => {
             [{"className":"_User","classLevelPermissions":{"find":{"*":true},"count":{"*":true},"get":{"*":true},"create":{"*":true},"update":{"*":true},"delete":{"*":true},"addField":{"*":true},"protectedFields":{"*":[]}}},{"className":"_Role","classLevelPermissions":{"find":{"*":true},"count":{"*":true},"get":{"*":true},"create":{"*":true},"update":{"*":true},"delete":{"*":true},"addField":{"*":true},"protectedFields":{"*":[]}}},{"className":"MyClass","classLevelPermissions":{"find":{},"count":{},"get":{},"create":{"*":true},"update":{},"delete":{},"addField":{},"protectedFields":{}}}]
         )
     })
+
+    it("can change CLP on existing class",async () => {
+        // Add two classes that points to each other
+        Parse.initialize(args['srcAppId'], undefined, args['srcMasterKey']);
+        Parse.serverURL = args['srcUrl']
+
+        const class1 = new Parse.Schema('MyClass');
+        await class1.get()
+        class1.setCLP({
+            find:{"*":true},
+            create:{"*":true}
+        })
+        await class1.update()
+
+        // Run sync
+        await sync(args)
+
+        // Verify
+        Parse.initialize(args['dstAppId'], undefined, args['dstMasterKey']);
+        Parse.serverURL = args['dstUrl']
+
+        const result = await Parse.Schema.all()
+        expect(_onlyCLP(result)).toEqual(
+            [{"className":"_User","classLevelPermissions":{"find":{"*":true},"count":{"*":true},"get":{"*":true},"create":{"*":true},"update":{"*":true},"delete":{"*":true},"addField":{"*":true},"protectedFields":{"*":[]}}},{"className":"_Role","classLevelPermissions":{"find":{"*":true},"count":{"*":true},"get":{"*":true},"create":{"*":true},"update":{"*":true},"delete":{"*":true},"addField":{"*":true},"protectedFields":{"*":[]}}},{"className":"MyClass","classLevelPermissions":{"find":{"*":true},"count":{},"get":{},"create":{"*":true},"update":{},"delete":{},"addField":{},"protectedFields":{}}}]
+        )
+    })
 })
