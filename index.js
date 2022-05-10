@@ -1,3 +1,5 @@
+const sync = require('./sync');
+
 // Command line args
 var argv = (process.argv || []);
 
