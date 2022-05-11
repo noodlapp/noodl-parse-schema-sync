@@ -56,8 +56,17 @@ async function deleteAllSchemas(appId,masterKey,url) {
     }
 }
 
+const args = {
+    srcAppId:process.env.SRC_APP_ID,
+    srcUrl:process.env.SRC_URL,
+    srcMasterKey:process.env.SRC_MASTER_KEY,
 
+    dstAppId:process.env.DST_APP_ID,
+    dstUrl:process.env.DST_URL,
+    dstMasterKey:process.env.DST_MASTER_KEY,    
+}
 
 module.exports = {
-    deleteAllSchemas
+    deleteAllSchemas,
+    args
 }

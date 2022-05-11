@@ -1,19 +1,12 @@
 const Parse = require('parse/node');
 const Helpers = require('./helpers')
 
-const args = {
-    srcAppId:"fd7510527d71db1f",
-    srcMasterKey:"be08a8386435fe8c057ead505889ddfc274d2d35e1ff08cd9614bda93e807930",
-    srcUrl:"https://backend.noodl.cloud/06vxgu/fd7510527d71db1f",
-
-    dstAppId:"de299ab1350dad2c",
-    dstMasterKey:"e934bad54bd9943e18ec631d1e634fafd85a2b6da103e5fdb814593a8f8104d8",
-    dstUrl:"https://backend.noodl.cloud/06vxgu/de299ab1350dad2c",
-}
+const args = Helpers.args
 
 function _trimSchema(a) {
     a.forEach((s) => { delete s.indexes; delete s.classLevelPermissions; })
     a = a.filter(s => s.className !== '_Session') // Ignore session class for these tests
+    a.sort((a,b) => a.className > b.className ? -1 : 1)
     return a
 }
 
@@ -61,7 +54,7 @@ describe("pointer tests",() => {
 
         const result = await Parse.Schema.all()
         expect(_trimSchema(result)).toEqual(
-            [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"daPointer":{"type":"Pointer","targetClass":"MyClass2"}}},{"className":"MyClass2","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"daRelation":{"type":"Relation","targetClass":"MyClass"}}}]
+            [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}},{"className":"MyClass2","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"daRelation":{"type":"Relation","targetClass":"MyClass"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"daPointer":{"type":"Pointer","targetClass":"MyClass2"}}}]            
         )
     })
 })
