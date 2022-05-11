@@ -17,8 +17,10 @@ function _trimSchema(a) {
     return a
 }
 
-describe("simple tests",() => {
+describe("simple tests", () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+
 
     // Start the server
     const sync = require('../sync.js')
@@ -51,7 +53,6 @@ describe("simple tests",() => {
         Parse.serverURL = args['dstUrl']
 
         const result = await Parse.Schema.all()
-        console.log(JSON.stringify(result,null,2))
         expect(_trimSchema(result)).toEqual(
             [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"stringField":{"type":"String"}}}]
         )
@@ -127,5 +128,28 @@ describe("simple tests",() => {
         expect(_trimSchema(result)).toEqual(
             [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"},"arrayField":{"type":"Array"},"objectField":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"},"fileField":{"type":"File"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"stringField":{"type":"String"},"booleanField":{"type":"Boolean"},"numberField":{"type":"Number"},"dateField":{"type":"Date"}}}]
         )
-    })    
+    })  
+    
+    it("can add field with default value and required",async() => {
+         // Add fields to source server
+         Parse.initialize(args['srcAppId'], undefined, args['srcMasterKey']);
+         Parse.serverURL = args['srcUrl']
+ 
+         const roleSchema = new Parse.Schema('MyClass');
+         await roleSchema.get()
+         roleSchema.addString('requiredField',{required:true,defaultValue:'wagga'})
+         await roleSchema.update()
+ 
+         // Run sync
+         await sync(args)
+ 
+         // Verify
+         Parse.initialize(args['dstAppId'], undefined, args['dstMasterKey']);
+         Parse.serverURL = args['dstUrl']
+ 
+         const result = await Parse.Schema.all()
+         expect(_trimSchema(result)).toEqual(
+            [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"},"objectField":{"type":"Object"},"arrayField":{"type":"Array"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"},"fileField":{"type":"File"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"stringField":{"type":"String"},"booleanField":{"type":"Boolean"},"numberField":{"type":"Number"},"dateField":{"type":"Date"},"requiredField":{"type":"String","required":true,"defaultValue":"wagga"}}}]
+        )
+    })
 })

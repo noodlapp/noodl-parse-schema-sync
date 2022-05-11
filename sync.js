@@ -96,13 +96,18 @@ async function sync(args) {
             else {
                 const srcField = srcSchema.fields[field]
                 console.log('* Adding field with type ' + srcField.type)
+
+                const options = {
+                    required:srcField.required,
+                    defaultValue:srcField.defaultValue,
+                }
                 if(srcField.type === 'Pointer') {
-                    schema.addPointer(field,srcField.targetClass)
+                    schema.addPointer(field,srcField.targetClass,options)
                 }
                 else if(srcField.type === 'Relation') {
-                    schema.addRelation(field,srcField.targetClass)
+                    schema.addRelation(field,srcField.targetClass,options)
                 }
-                else schema.addField(field,srcField.type)
+                else schema.addField(field,srcField.type,options)
             }
         }
 
