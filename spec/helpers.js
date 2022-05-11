@@ -1,3 +1,4 @@
+const parse = require('parse');
 const Parse = require('parse/node');
 
 const _standardFields = {
@@ -42,6 +43,7 @@ async function deleteAllSchemas(appId,masterKey,url) {
 
         if(!_standardFields[s.className]) {
             // Custom class, delete it
+            await parseSchema.purge()
             await parseSchema.delete()
         }
         else {

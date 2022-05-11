@@ -86,15 +86,34 @@ async function sync(args) {
         await schema.get()
 
         for(let field in srcSchema.fields) {
+            const srcField = srcSchema.fields[field]
 
-            if(dstSchemas[className] && dstSchemas[className].fields[field]) {
-                // Field exists
-            }
-            else if(_isStandardField(className,field)) {
+            if(_isStandardField(className,field)) {
                 // Ignore standard field
             }
+            else if(dstSchemas[className] && dstSchemas[className].fields[field]) {
+                // Field exists
+                const dstField = dstSchemas[className].fields[field]
+                if(srcField.type !== 'Pointer' && srcField.type !== 'Relation') {
+                    if(dstField.type !== srcField.type || dstField.required !== srcField.required || dstField.defaultValue !== srcField.defaultValue) {
+                        if(args.force === true) { // Only run for force
+                            console.log(`* Field ${field} has changed, purging old field and creating new...`)
+                
+                            // Only way is to remove and add the field again
+                            schema.deleteField(field)
+                            await schema.update()
+                            schema.addField(field,srcField.type,{
+                                required:srcField.required,
+                                defaultValue:srcField.defaultValue,
+                            })
+                        }
+                        else {
+                            console.log(`* Field ${field} has changed, run with --force to replace field, WARNING will remove all data in that field`)
+                        }
+                    }
+                }
+            }
             else {
-                const srcField = srcSchema.fields[field]
                 console.log('* Adding field with type ' + srcField.type)
 
                 const options = {
