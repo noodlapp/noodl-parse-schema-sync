@@ -13,7 +13,7 @@ const args = {
 
 function _trimSchema(a) {
     a.forEach((s) => { delete s.indexes; delete s.classLevelPermissions; })
-
+    a = a.filter(s => s.className !== '_Session') // Ignore session class for these tests
     return a
 }
 
@@ -51,6 +51,7 @@ describe("simple tests",() => {
         Parse.serverURL = args['dstUrl']
 
         const result = await Parse.Schema.all()
+        console.log(JSON.stringify(result,null,2))
         expect(_trimSchema(result)).toEqual(
             [{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}},{"className":"MyClass","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"stringField":{"type":"String"}}}]
         )

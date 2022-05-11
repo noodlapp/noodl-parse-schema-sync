@@ -13,6 +13,15 @@ const _standardFields = {
         email: true,
         emailVerified: true,
         authData: true
+    },
+    _Session:{
+        sessionToken: true,
+        expiresAt: true,
+        user: true,
+        updatedAt: true,
+        createdWith: true,
+        installationId: true,
+        restricted: true,
     }
 }
 
@@ -31,7 +40,7 @@ async function deleteAllSchemas(appId,masterKey,url) {
     for(let s of schemas) {
         const parseSchema = new Parse.Schema(s.className);
 
-        if(s.className !== '_Role' && s.className !== '_User') {
+        if(!_standardFields[s.className]) {
             // Custom class, delete it
             await parseSchema.delete()
         }

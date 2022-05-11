@@ -13,6 +13,15 @@ const _standardFields = {
         email: true,
         emailVerified: true,
         authData: true
+    },
+    _Session:{
+        sessionToken: true,
+        expiresAt: true,
+        user: true,
+        updatedAt: true,
+        createdWith: true,
+        installationId: true,
+        restricted: true,
     }
 }
 
@@ -61,7 +70,7 @@ async function sync(args) {
 
     // First add all new classes (without fields)
     for(let className in srcSchemas) {
-        if(!dstSchemas[className]) {
+        if(!dstSchemas[className] && !_standardFields[className]) {
             console.log('Creating class ' + className)
             let schema = new Parse.Schema(className); 
             await schema.save()

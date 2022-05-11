@@ -13,7 +13,7 @@ const args = {
 
 function _trimSchema(a) {
     a.forEach((s) => { delete s.indexes; delete s.classLevelPermissions; })
-
+    a = a.filter(s => s.className !== '_Session') // Ignore session class for these tests
     return a
 }
 
