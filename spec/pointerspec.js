@@ -28,7 +28,7 @@ describe("pointer tests",() => {
     })
 
   
-    it('can add class with fields',async () => {
+    it('can add two classes with pointers to each other',async () => {
         // Add two classes that points to each other
         Parse.initialize(args['srcAppId'], undefined, args['srcMasterKey']);
         Parse.serverURL = args['srcUrl']
