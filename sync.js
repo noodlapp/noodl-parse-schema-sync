@@ -56,6 +56,10 @@ async function sync(args) {
 
     const srcSchemas = await _getSchemas()
 
+    // Ignore session and installation classes
+    delete srcSchemas._Session;
+    delete srcSchemas._Installation;
+
     // Then download the schema from the destination server
     if(args['dstAppId'] === undefined || args['dstMasterKey'] === undefined || args['dstUrl'] === undefined) {
         console.log('You must provide dstAppId, dstMasterKey and dstUrl arguments')

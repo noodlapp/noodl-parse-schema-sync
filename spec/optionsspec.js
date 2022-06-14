@@ -11,7 +11,7 @@ function _trimSchema(a) {
 }
 
 describe("options tests",() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
     // Start the server
     const sync = require('../sync.js')

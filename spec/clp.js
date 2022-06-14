@@ -17,7 +17,7 @@ function _onlyCLP(a) {
 }
 
 describe("class level permissions tests",() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
     // Start the server
     const sync = require('../sync.js')

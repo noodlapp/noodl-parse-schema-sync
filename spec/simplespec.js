@@ -12,7 +12,7 @@ function _trimSchema(a) {
 }
 
 describe("simple tests", () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
     // Start the server
     const sync = require('../sync.js')
@@ -23,9 +23,17 @@ describe("simple tests", () => {
         const srcSchemas = await Parse.Schema.all()
         expect(_trimSchema(srcSchemas)).toEqual([{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}}])
         
+        // Sign up to source to make sure the 
+        try {
+            await Parse.User.signUp("woff","woffwoff")
+        }
+        catch(e) { /* Fine if it already exists */ }
+
         await Helpers.deleteAllSchemas(args['dstAppId'],args['dstMasterKey'],args['dstUrl'])
         const dstSchemas = await Parse.Schema.all()
         expect(_trimSchema(dstSchemas)).toEqual([{"className":"_User","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"username":{"type":"String"},"password":{"type":"String"},"email":{"type":"String"},"emailVerified":{"type":"Boolean"},"authData":{"type":"Object"}}},{"className":"_Role","fields":{"objectId":{"type":"String"},"createdAt":{"type":"Date"},"updatedAt":{"type":"Date"},"ACL":{"type":"ACL"},"name":{"type":"String"},"users":{"type":"Relation","targetClass":"_User"},"roles":{"type":"Relation","targetClass":"_Role"}}}])
+    
+
     })
 
     it('can add class with fields',async () => {
