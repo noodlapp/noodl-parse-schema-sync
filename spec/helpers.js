@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 
 const parse = require("parse");
 const Parse = require("parse/node");
@@ -59,6 +59,35 @@ async function deleteAllSchemas(appId, masterKey, url) {
       await parseSchema.update();
     }
   }
+}
+
+const requiredEnvVariables = [
+  "SRC_APP_ID",
+  "SRC_URL",
+  "SRC_MASTER_KEY",
+  "DST_APP_ID",
+  "DST_URL",
+  "DST_MASTER_KEY",
+];
+
+let allVariablesSet = true;
+let missingVariables = [];
+
+requiredEnvVariables.forEach((variable) => {
+  if (!process.env[variable]) {
+    console.log(`${variable} is not set`);
+    missingVariables.push(variable);
+    allVariablesSet = false;
+  }
+});
+
+if (allVariablesSet) {
+  console.log("All required environment variables are set");
+} else {
+  const missingVariablesStr = missingVariables.join(", ");
+  const errorMsg = `Some environment variables are missing: ${missingVariablesStr}`;
+  console.log(errorMsg);
+  throw new Error("Some environment variables are missing");
 }
 
 const args = {
