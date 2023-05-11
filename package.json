@@ -12,6 +12,7 @@
     "parse": "^3.4.2"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "jasmine": "^4.0.2"
   }
 }

@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const parse = require("parse");
 const Parse = require("parse/node");
 
