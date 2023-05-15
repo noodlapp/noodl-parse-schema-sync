@@ -48,7 +48,3 @@ DST_URL=<destination URL>
 
 3. Replace the values with the appropriate values for your Parse instances
 4. Run `npm test` to run the unit tests with the environment variables set
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more information.
