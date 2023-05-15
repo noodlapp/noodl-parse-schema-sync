@@ -1,4 +1,4 @@
-const sync = require('./src/sync');
+const print = require('./src/print');
 
 // Command line args
 var argv = (process.argv || []);
@@ -13,4 +13,4 @@ for (var i = 0; i < argv.length; i++) {
     }
 }
 
-sync(args)
+print(args)
