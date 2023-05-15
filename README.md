@@ -1,6 +1,6 @@
 # Parse Schema Sync CLI
 
-This is a command line interface (CLI) that allows you to sync the schema of one Parse instance to another. This is helpful for keeping the schema of multiple Parse instances in sync.
+This is a command line interface (CLI) that allows you to sync the schema of one Parse instance to another or print the schema of a Parse instance to the console. This is helpful for keeping the schema of multiple Parse instances in sync and inspecting the current schema.
 
 ## Installation
 
@@ -9,7 +9,9 @@ This is a command line interface (CLI) that allows you to sync the schema of one
 
 ## Usage
 
-To use the CLI, run the following command:
+### Syncing Schema
+
+To sync the schema between two Parse instances, run the following command:
 
 ```
 $ node index --srcAppId <source app ID> --srcMasterKey <source master key> --srcUrl <source URL> --dstAppId <destination app ID> --dstMasterKey <destination master key> --dstUrl <destination URL>
@@ -24,11 +26,19 @@ Here's an explanation of the different arguments:
 - `dstMasterKey`: The master key of the destination Parse instance
 - `dstUrl`: The URL of the destination Parse instance
 
-## Options
+#### Options
 
 There is an additional option you can use:
 
 - `--force`: This option will replace a field if it has changed. However, it will also remove all data in that field. Use with caution.
+
+### Printing Schema
+
+To print the schema of a Parse instance to the console, run this command:
+
+```
+$ node print --appId <app ID> --masterKey <master key> --url <URL>
+```
 
 ## Running Tests
 

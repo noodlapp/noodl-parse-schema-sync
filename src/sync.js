@@ -1,47 +1,5 @@
 const Parse = require('parse/node');
-
-const _standardFields = {
-    _Role:{
-        name: true,
-        users: true,
-        roles: true
-    },
-    _User:{
-
-        username: true,
-        password: true,
-        email: true,
-        emailVerified: true,
-        authData: true
-    },
-    _Session:{
-        sessionToken: true,
-        expiresAt: true,
-        user: true,
-        updatedAt: true,
-        createdWith: true,
-        installationId: true,
-        restricted: true,
-    }
-}
-
-const _standardFieldsAllSchemas = {
-    objectId: true,
-    createdAt: true,
-    updatedAt: true,
-    ACL: true,
-}
-
-function _isStandardField(className,field) {
-    return  _standardFieldsAllSchemas[field] || (_standardFields[className]!==undefined && _standardFields[className][field])
-}
-
-async function _getSchemas() {
-    const _schemas = await Parse.Schema.all()
-    const schemas = {}
-    _schemas.forEach((s) => schemas[s.className] = s)
-    return schemas
-}
+const { isStandardField, getSchemas } = require('./helper');
 
 async function sync(args) {
     // First download the schema from the source server
@@ -54,7 +12,7 @@ async function sync(args) {
 
     Parse.serverURL = args['srcUrl']
 
-    const srcSchemas = await _getSchemas()
+    const srcSchemas = await getSchemas()
 
     // Ignore session and installation classes
     delete srcSchemas._Session;
@@ -70,7 +28,7 @@ async function sync(args) {
 
     Parse.serverURL = args['dstUrl']
 
-    const dstSchemas = await _getSchemas()
+    const dstSchemas = await getSchemas()
 
     // First add all new classes (without fields)
     for(let className in srcSchemas) {
@@ -92,7 +50,7 @@ async function sync(args) {
         for(let field in srcSchema.fields) {
             const srcField = srcSchema.fields[field]
 
-            if(_isStandardField(className,field)) {
+            if(isStandardField(className,field)) {
                 // Ignore standard field
             }
             else if(dstSchemas[className] && dstSchemas[className].fields[field]) {
